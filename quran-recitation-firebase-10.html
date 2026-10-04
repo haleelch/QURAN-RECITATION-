@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Qur'an Recitation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF9F5;
+    --surface:#FFFFFF;
+    --surface-2:#F3F1E9;
+    --ink:#16261C;
+    --ink-soft:#5B6B60;
+    --ink-faint:#94A199;
+    --emerald:#0F4C3A;
+    --emerald-deep:#0A362A;
+    --emerald-tint:#E7EFE9;
+    --gold:#AD8A4E;
+    --gold-soft:#EFE3C8;
+    --amber:#B4703A;
+    --amber-tint:#F6E9DD;
+    --line:#E7E3D6;
+    --shadow: 0 1px 2px rgba(22,38,28,0.04), 0 6px 20px rgba(22,38,28,0.06);
+    --radius: 18px;
+    --font-display: 'Amiri', serif;
+    --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0C1712;
+      --surface:#122019;
+      --surface-2:#17251D;
+      --ink:#EDF3EE;
+      --ink-soft:#A9BAAF;
+      --ink-faint:#6E8177;
+      --emerald:#4FA080;
+      --emerald-deep:#0A362A;
+      --emerald-tint:#152A21;
+      --gold:#D4B876;
+      --gold-soft:#2A2418;
+      --amber:#DB9A66;
+      --amber-tint:#2B2019;
+      --line:#22332A;
+      --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0C1712;
+    --surface:#122019;
+    --surface-2:#17251D;
+    --ink:#EDF3EE;
+    --ink-soft:#A9BAAF;
+    --ink-faint:#6E8177;
+    --emerald:#4FA080;
+    --emerald-deep:#0A362A;
+    --emerald-tint:#152A21;
+    --gold:#D4B876;
+    --gold-soft:#2A2418;
+    --amber:#DB9A66;
+    --amber-tint:#2B2019;
+    --line:#22332A;
+    --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.3);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  #app{
+    max-width:1100px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- Header ---------- */
+  .app-header{
+    position:sticky; top:0; z-index:20;
+    background:var(--bg);
+    border-bottom:1px solid var(--line);
+    padding:14px 18px 12px;
+  }
+  .bismillah{
+    font-family:var(--font-display);
+    font-size:13px;
+    color:var(--ink-faint);
+    text-align:center;
+    margin:0 0 6px;
+    letter-spacing:0.02em;
+  }
+  .header-row{
+    display:flex; align-items:baseline; justify-content:space-between;
+    max-width:640px; margin:0 auto;
+  }
+  .app-title{
+    font-family:var(--font-display);
+    font-size:21px; font-weight:700;
+    color:var(--emerald);
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .page-label{
+    font-size:12.5px; color:var(--ink-soft); font-weight:600;
+    text-transform:uppercase; letter-spacing:0.06em;
+  }
+  .theme-toggle{
+    width:32px;height:32px;border-radius:10px;border:1px solid var(--line);
+    background:var(--surface-2);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;flex-shrink:0;color:var(--ink-soft);padding:0;
+  }
+  .theme-toggle svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;}
+  .theme-toggle .icon-moon{display:none;}
+  :root[data-theme="dark"] .theme-toggle .icon-sun{display:none;}
+  :root[data-theme="dark"] .theme-toggle .icon-moon{display:block;}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .theme-toggle .icon-sun{display:none;}
+    :root:not([data-theme="light"]) .theme-toggle .icon-moon{display:block;}
+  }
+
+  main{
+    flex:1;
+    padding:18px 18px 100px;
+    max-width:640px;
+    width:100%;
+    margin:0 auto;
+  }
+  .wide main{max-width:960px;}
+
+  /* ---------- Bottom nav ---------- */
+  .bottom-nav{
+    position:sticky; bottom:0; z-index:20;
+    background:var(--surface);
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+    box-shadow: 0 -2px 12px rgba(22,38,28,0.05);
+  }
+  .nav-btn{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    background:none; border:none; padding:8px 2px 6px; cursor:pointer;
+    color:var(--ink-faint); font-family:var(--font-body); font-size:10.5px; font-weight:600;
+    border-radius:12px;
+  }
+  .nav-btn svg{width:21px;height:21px; stroke:var(--ink-faint); fill:none; stroke-width:1.7;}
+  .nav-btn.active{color:var(--emerald);}
+  .nav-btn.active svg{stroke:var(--emerald);}
+  .nav-btn:active{background:var(--surface-2);}
+
+  /* ---------- Cards / generic ---------- */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+  .section-title{
+    font-size:15px; font-weight:700; color:var(--ink); margin:26px 0 12px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .section-title:first-child{margin-top:0;}
+  .muted{color:var(--ink-soft);}
+  .pill{
+    display:inline-flex; align-items:center; gap:5px;
+    padding:5px 11px; border-radius:99px; font-size:12.5px; font-weight:600;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink-soft);
+    cursor:pointer; white-space:nowrap;
+  }
+  .pill.active{background:var(--emerald); color:#fff; border-color:var(--emerald);}
+  .btn{
+    font-family:var(--font-body); font-weight:700; font-size:13.5px;
+    border-radius:12px; border:none; cursor:pointer; padding:10px 16px;
+  }
+  .btn-primary{background:var(--emerald); color:#fff;}
+  .btn-primary:active{background:var(--emerald-deep);}
+  .btn-ghost{background:var(--surface-2); color:var(--ink);}
+  .btn-outline{background:transparent; border:1px solid var(--line); color:var(--ink);}
+  .btn-danger{background:transparent; color:#B44242; border:1px solid #E3C6C6;}
+  .btn:disabled{opacity:0.45; cursor:not-allowed;}
+  .icon-btn{
+    width:34px;height:34px; border-radius:10px; border:1px solid var(--line);
+    background:var(--surface); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; color:var(--ink-soft); flex-shrink:0;
+  }
+  .icon-btn svg{width:16px;height:16px; stroke:currentColor; fill:none; stroke-width:2;}
+  input[type=text], input[type=date]{
+    font-family:var(--font-body); font-size:14px; padding:10px 12px;
+    border:1px solid var(--line); border-radius:11px; background:var(--surface); color:var(--ink);
+    width:100%;
+  }
+  input:focus, .pill:focus-visible, .btn:focus-visible, .nav-btn:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
+  /* ---------- Today status ---------- */
+  .hero{
+    background:linear-gradient(160deg, var(--emerald) 0%, var(--emerald-deep) 100%);
+    border-radius:22px; padding:22px 20px; color:#fff; position:relative; overflow:hidden;
+  }
+  .hero .eyebrow-date{font-size:13px; color:var(--gold-soft); font-weight:600; opacity:0.9;}
+  .hero-body{display:flex; align-items:center; gap:18px; margin-top:10px;}
+  .ring-wrap{position:relative; width:96px; height:96px; flex-shrink:0;}
+  .ring{
+    width:96px; height:96px; border-radius:50%;
+    background: conic-gradient(var(--gold) calc(var(--pct)*1%), rgba(255,255,255,0.18) 0);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .ring-inner{
+    width:74px; height:74px; border-radius:50%; background:var(--emerald-deep);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .ring-inner b{font-size:20px; line-height:1;}
+  .ring-inner span{font-size:9.5px; color:var(--gold-soft); margin-top:2px; letter-spacing:0.03em;}
+  .hero-stats{flex:1;}
+  .hero-count{font-family:var(--font-display); font-size:26px; font-weight:700;}
+  .hero-count small{font-size:14px; font-weight:400; opacity:0.75;}
+  .hero-sub{font-size:12.5px; color:rgba(255,255,255,0.72); margin-top:3px;}
+  .khatam-banner{
+    margin-top:14px; padding:9px 13px; border-radius:12px;
+    background:rgba(255,255,255,0.12); font-size:13px; font-weight:700;
+    display:flex; align-items:center; gap:7px; color:var(--gold-soft);
+  }
+  .quote-line{
+    font-family:var(--font-display); font-size:13px; font-style:italic;
+    color:rgba(255,255,255,0.75); margin-top:14px; border-top:1px solid rgba(255,255,255,0.15);
+    padding-top:12px;
+  }
+  .viewing-banner{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--gold-soft); border:1px solid var(--gold); color:var(--ink);
+    border-radius:13px; padding:10px 13px; font-size:12.5px; font-weight:600; margin-top:14px;
+  }
+  .viewing-banner button{background:none;border:none;color:var(--emerald);font-weight:800;font-size:12.5px;cursor:pointer;}
+
+  /* ---------- Filters ---------- */
+  .filter-row{display:flex; gap:8px; align-items:center; margin-top:18px; overflow-x:auto;}
+  .search-box{position:relative; margin-top:10px;}
+  .search-box svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px;height:15px; stroke:var(--ink-faint); fill:none; stroke-width:2;}
+  .search-box input{padding-left:34px;}
+
+  /* ---------- Student card ---------- */
+  .student-list{display:flex; flex-direction:column; gap:10px; margin-top:14px;}
+  .s-card{
+    display:flex; align-items:center; gap:12px; padding:13px 14px;
+    border-radius:16px; border:1px solid var(--line); background:var(--surface);
+  }
+  .s-card.done{background:var(--emerald-tint); border-color:transparent;}
+  .juz-badge{
+    width:50px; height:50px; border-radius:13px; flex-shrink:0;
+    background:var(--surface-2); display:flex; flex-direction:column; align-items:center; justify-content:center;
+    border:1px solid var(--line);
+  }
+  .s-card.done .juz-badge{background:var(--emerald); border-color:var(--emerald);}
+  .juz-badge b{font-size:15px; color:var(--ink); line-height:1;}
+  .s-card.done .juz-badge b{color:#fff;}
+  .juz-badge small{font-family:var(--font-display); font-size:11px; color:var(--gold); margin-top:1px;}
+  .s-card.done .juz-badge small{color:var(--gold-soft);}
+  .s-info{flex:1; min-width:0;}
+  .s-name{font-size:14.5px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .juz-line{font-family:var(--font-display); font-size:12.5px; color:var(--gold); margin-top:1px; direction:rtl; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .s-status{font-size:12px; margin-top:2px;}
+  .s-status.pending{color:var(--amber);}
+  .s-status.done{color:var(--emerald);}
+  .s-status.future{color:var(--ink-faint);}
+  .mark-btn{
+    flex-shrink:0; font-family:var(--font-body); font-weight:700; font-size:12.5px;
+    border-radius:11px; border:none; padding:9px 13px; cursor:pointer; white-space:nowrap;
+  }
+  .mark-btn.to-mark{background:var(--emerald); color:#fff;}
+  .mark-btn.undo{background:transparent; color:var(--ink-soft); border:1px solid var(--line);}
+  .mark-btn.locked{background:var(--surface-2); color:var(--ink-faint); cursor:not-allowed;}
+  .empty-state{text-align:center; padding:40px 18px; color:var(--ink-faint); font-size:13.5px;}
+
+  /* ---------- Calendar ---------- */
+  .cal-nav{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+  .cal-month{font-family:var(--font-display); font-size:17px; font-weight:700; color:var(--ink);}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px;}
+  .cal-dow{text-align:center; font-size:10.5px; font-weight:700; color:var(--ink-faint); padding-bottom:4px; text-transform:uppercase;}
+  .cal-cell{
+    aspect-ratio:1; border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-size:13px; font-weight:600; cursor:pointer; border:1px solid transparent; position:relative;
+    background:var(--surface-2); color:var(--ink);
+    -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; touch-action:manipulation;
+  }
+  .cal-cell.empty{background:none; cursor:default;}
+  .cal-cell.future{color:var(--ink-faint); cursor:default; background:transparent; border:1px dashed var(--line);}
+  .cal-cell.before-start{color:var(--ink-faint); cursor:default; background:transparent;}
+  .cal-cell.excluded{color:var(--ink-faint); text-decoration:line-through; opacity:0.55;}
+  .cal-cell.today{border:2px solid var(--gold); background:var(--gold-soft); font-weight:800;}
+  .cal-cell.selected{outline:2px solid var(--emerald); outline-offset:1px;}
+  .cal-cell .dot{display:none;}
+  .cal-cell.full{background:var(--gold); color:#fff; border-color:transparent;}
+  .cal-cell.full.today{background:var(--gold); border:2px solid var(--emerald-deep);}
+  .cal-cell.partial{background:var(--emerald-tint); color:var(--emerald); border-color:transparent;}
+  .cal-cell.none{background:var(--amber-tint); color:var(--amber); border-color:transparent;}
+  .cal-legend{display:flex; gap:16px; margin-top:16px; flex-wrap:wrap; font-size:11.5px; color:var(--ink-soft);}
+  .cal-legend span{display:inline-flex; align-items:center; gap:5px;}
+  .legend-dot{width:8px;height:8px;border-radius:50%;}
+
+  /* ---------- Stats ---------- */
+  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px;}
+  .stat-box{padding:15px; border-radius:15px; background:var(--surface); border:1px solid var(--line);}
+  .stat-box b{font-family:var(--font-display); font-size:22px; display:block; color:var(--emerald);}
+  .stat-box span{font-size:11.5px; color:var(--ink-soft);}
+  table.s-table{width:100%; border-collapse:collapse; margin-top:10px; font-size:13px;}
+  table.s-table th{text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:0.04em; color:var(--ink-faint); padding:6px 8px; border-bottom:1px solid var(--line);}
+  table.s-table td{padding:9px 8px; border-bottom:1px solid var(--line); color:var(--ink);}
+  .table-wrap{overflow-x:auto; border-radius:14px; border:1px solid var(--line);}
+  .rate-bar{width:60px; height:6px; border-radius:4px; background:var(--surface-2); overflow:hidden; display:inline-block; vertical-align:middle; margin-right:6px;}
+  .rate-bar i{display:block; height:100%; background:var(--emerald);}
+  .khatam-row{display:flex; justify-content:space-between; align-items:center; padding:11px 4px; border-bottom:1px solid var(--line); font-size:13.5px;}
+  .khatam-row:last-child{border-bottom:none;}
+
+  /* ---------- Students view ---------- */
+  .students-grid{display:flex; flex-direction:column; gap:9px; margin-top:14px;}
+  .stu-row{display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:15px; border:1px solid var(--line); background:var(--surface); cursor:pointer;}
+  .avatar{width:40px;height:40px;border-radius:50%; background:var(--emerald-tint); color:var(--emerald); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; flex-shrink:0;}
+  .stu-meta{flex:1; min-width:0;}
+  .stu-meta b{font-size:14px; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .stu-meta span{font-size:11.5px; color:var(--ink-soft);}
+  .chev{width:16px;height:16px; stroke:var(--ink-faint); fill:none; stroke-width:2; flex-shrink:0;}
+
+  .detail-header{display:flex; align-items:center; gap:10px; margin-bottom:4px;}
+  .back-btn{background:none;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);padding:4px;}
+  .back-btn svg{width:20px;height:20px; stroke:currentColor; fill:none; stroke-width:2;}
+  .hist-row{display:flex; align-items:center; justify-content:space-between; padding:10px 4px; border-bottom:1px solid var(--line); font-size:13.5px;}
+  .hist-row:last-child{border-bottom:none;}
+  .hist-status{font-weight:700; font-size:12px;}
+  .hist-status.done{color:var(--emerald);}
+  .hist-status.miss{color:var(--amber);}
+  .hist-status.future{color:var(--ink-faint);}
+
+  /* ---------- Admin ---------- */
+  .admin-block{margin-bottom:26px;}
+  .admin-block h4{font-size:13.5px; margin:0 0 4px; color:var(--ink);}
+  .admin-block p.hint{font-size:12px; color:var(--ink-soft); margin:0 0 12px;}
+  .admin-row{display:flex; align-items:center; gap:8px; padding:9px 4px; border-bottom:1px solid var(--line);}
+  .admin-row:last-child{border-bottom:none;}
+  .admin-row .order-no{width:22px;font-size:12px;color:var(--ink-faint);font-weight:700;flex-shrink:0;}
+  .admin-row input[type=text]{flex:1; padding:7px 10px; font-size:13.5px;}
+  .add-row{display:flex; gap:8px; margin-top:12px;}
+  .warn-box{background:var(--amber-tint); color:var(--amber); border-radius:11px; padding:10px 12px; font-size:12.5px; font-weight:600; margin-bottom:12px;}
+
+  .ar{font-family:var(--font-display); font-weight:700;}
+  .wa-btn{
+    width:34px;height:34px;border-radius:10px;border:1px solid #BFE3CE;background:#E9F7EF;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  }
+  .wa-btn svg{width:17px;height:17px;fill:#1E9E56;}
+  .login-wrap{max-width:340px;margin:30px auto 0;text-align:center;}
+  .login-wrap h3{font-family:var(--font-display);font-size:19px;color:var(--emerald);margin:10px 0 4px;}
+  .login-wrap p.hint{font-size:12.5px;color:var(--ink-soft);margin:0 0 18px;}
+  .login-field{margin-bottom:10px;text-align:left;}
+  .login-field label{font-size:11.5px;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:4px;}
+  .login-error{color:#B44242;font-size:12.5px;font-weight:600;margin-top:8px;}
+  .admin-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .logout-link{background:none;border:none;color:var(--ink-soft);font-size:12.5px;font-weight:700;cursor:pointer;}
+  ::selection{background:var(--gold-soft);}
+  @media (min-width: 760px){
+    .stat-grid{grid-template-columns:repeat(4,1fr);}
+    .students-grid{display:grid; grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="app-header">
+    <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    <div class="header-row">
+      <h1 class="app-title">Qur'an Recitation</h1>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="page-label" id="pageLabel">Today</div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark / light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="content"></main>
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-btn" data-view="home">
+      <svg viewBox="0 0 24 24"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9.5h12V10"/></svg>
+      Home
+    </button>
+    <button class="nav-btn" data-view="calendar">
+      <svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="15" rx="2.5"/><path d="M4 10h16M8.5 3.5v3.5M15.5 3.5v3.5"/></svg>
+      Calendar
+    </button>
+    <button class="nav-btn" data-view="stats">
+      <svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-7"/></svg>
+      Statistics
+    </button>
+    <button class="nav-btn" data-view="students">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 20c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5"/><circle cx="17.5" cy="8" r="2.3"/><path d="M15.5 14.5c2.6.2 4.5 2.2 4.5 5.3"/></svg>
+      Students
+    </button>
+    <button class="nav-btn" data-view="admin">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H4.7a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.5V4.7a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1h.2a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg>
+      Admin
+    </button>
+  </nav>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, setDoc, updateDoc, onSnapshot, writeBatch
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB6xqNX-oTPoraliwDnnRZRcRI3MCUzjOg",
+  authDomain: "quran-recitation-64d5d.firebaseapp.com",
+  projectId: "quran-recitation-64d5d",
+  storageBucket: "quran-recitation-64d5d.firebasestorage.app",
+  messagingSenderId: "1001521311583",
+  appId: "1:1001521311583:web:197c9aee9102e9a52010ea"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+
+(function(){
+  "use strict";
+
+  /* ================= STORAGE (Firebase Firestore, real-time) ================= */
+  var DEFAULT_STUDENTS = [
+    ["Ishaq","9995127252"],["Swalih Kakkad","8547570114"],["Shibli Mannarkkad","7306201432"],
+    ["Niyas Vellamunda","8075940968"],["Swadiq Kodoor","7994228335"],["Thameem","9497178003"],
+    ["Sinan Kallikkandi","9061882663"],["Swalih Vanimel","917592893817"],["Mihras Orkkatteri","7594896719"],
+    ["Adnan Mahi","9605524265"],["Swalih Pullukkara","7034115688"],["Ismail Elankoor","9207519687"],
+    ["Ismail Pullukkara","9562337706"],["Mansoor Vennakkode","9946747819"],["Fasal Kavannoor","8943137993"],
+    ["Hashim Khalid","9947301602"],["Ashkar Parakkadavu","8089903399"],["Shafeeh Thiruvallur","7736575021"],
+    ["Sajjad Parakkadavu","8111925352"],["Musthafa Parakkadavu","7594013963"],["Muhammed NK","9496213242"],
+    ["Muhammed VTK","9846917028"],["Aslah Vanimel","7736743363"],["Munavvar Theekkuni","6282143487"],
+    ["Shafi Nandi","9747886653"],["Shanid Valliyad","9539759521"],["Muhammed EU","9074596648"],
+    ["Asim","8590771931"],["Fajran","7594020247"],["Munavvir TP","9447408371"]
+  ];
+
+  var students = [];   // array of {id, name, phone, order} kept sorted by order — synced from Firestore
+  var records  = {};   // key `${date}_${studentId}` -> {completed, completedAt} — synced from Firestore
+  var settings = { baseDate: dateToStrEarly(), baseJuz: 1, programStart: dateToStrEarly(), adminId: '', adminPassword: '', excludedDates: [], turnSwaps: [], dedupV2Done: false };
+
+  function dateToStrEarly(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+  var dataReady = { students:false, records:false, settings:false };
+  var seededStudents = false, seededSettings = false;
+  var fbErrorShown = false;
+
+  function fbFail(label){
+    return function(err){
+      console.error(label, err);
+      if(!fbErrorShown){
+        fbErrorShown = true;
+        content.innerHTML = '<div class="empty-state" style="padding-top:60px;">Could not connect to the database.<br>Check your internet connection and Firebase setup, then reload.</div>';
+      }
+    };
+  }
+
+  function maybeFirstRender(){
+    if(dataReady.students && dataReady.records && dataReady.settings){
+      render();
+    }
+  }
+
+  onSnapshot(collection(db, 'students'), function(snap){
+    if(snap.empty && !seededStudents){
+      seededStudents = true;
+      var batch = writeBatch(db);
+      DEFAULT_STUDENTS.forEach(function(pair, i){
+        var ref = doc(collection(db, 'students'));
+        batch.set(ref, { name:pair[0], phone:pair[1], order:i });
+      });
+      batch.commit().catch(fbFail('seed students'));
+      return; // the write above triggers another snapshot with real data
+    }
+    var arr = [];
+    snap.forEach(function(d){
+      var v = d.data();
+      arr.push({ id: d.id, name: v.name||'', phone: v.phone||'', order: (v.order!==undefined ? v.order : 0) });
+    });
+    arr.sort(function(a,b){ return a.order - b.order; });
+    students = arr;
+    dataReady.students = true;
+    maybeRunMigrations();
+    maybeFirstRender();
+    if(dataReady.students && dataReady.records && dataReady.settings) render();
+  }, fbFail('students'));
+
+  var migrationsChecked = false;
+  function maybeRunMigrations(){
+    if(!dataReady.students || !dataReady.records || !dataReady.settings) return;
+    if(!migrationsChecked){
+      migrationsChecked = true;
+      if(maybeDedupStudents()) return; // writes pending — fresh snapshots will re-trigger this
+    }
+    maybeRunTurnSwapMigration();
+  }
+
+  /* One-time cleanup: if students got double-seeded (duplicate name entries),
+     merge their records onto one doc per name, delete the duplicates, and
+     reset order + turn-swap history to a clean baseline. */
+  function maybeDedupStudents(){
+    if(settings.dedupV2Done) return false;
+    var byName = {};
+    students.forEach(function(s){ (byName[s.name] = byName[s.name] || []).push(s); });
+    var dupNames = Object.keys(byName).filter(function(n){ return byName[n].length>1; });
+    if(dupNames.length===0){
+      settings.dedupV2Done = true;
+      setDoc(doc(db,'settings','main'), { dedupV2Done:true }, { merge:true }).catch(function(e){ console.error(e); });
+      return false;
+    }
+    var defaultIndexByName = {};
+    DEFAULT_STUDENTS.forEach(function(pair,i){ defaultIndexByName[pair[0]] = i; });
+
+    var ops = []; // {type:'set'|'delete'|'update', ref, data}
+    dupNames.forEach(function(name){
+      var group = byName[name].slice();
+      function completedCount(sid){
+        var c = 0;
+        Object.keys(records).forEach(function(k){ if(k.slice(-(sid.length+1))==='_'+sid && records[k].completed) c++; });
+        return c;
+      }
+      group.sort(function(a,b){ return completedCount(b.id) - completedCount(a.id); });
+      var primary = group[0];
+      for(var i=1;i<group.length;i++){
+        var dup = group[i];
+        Object.keys(records).forEach(function(k){
+          if(k.slice(-(dup.id.length+1)) !== '_'+dup.id) return;
+          var dateStr = k.slice(0, k.length - (dup.id.length+1));
+          var primKey = dateStr + '_' + primary.id;
+          var dupRec = records[k];
+          var primRec = records[primKey];
+          if(!primRec || (!primRec.completed && dupRec.completed)){
+            ops.push({ type:'set', ref: doc(db,'records', primKey), data: { date:dateStr, studentId:primary.id, completed:!!dupRec.completed, completedAt: dupRec.completedAt||null } });
+          }
+          ops.push({ type:'delete', ref: doc(db,'records', k) });
+        });
+        ops.push({ type:'delete', ref: doc(db,'students', dup.id) });
+      }
+      if(defaultIndexByName[name] !== undefined){
+        ops.push({ type:'update', ref: doc(db,'students',primary.id), data: { order: defaultIndexByName[name] } });
+      }
+    });
+    ops.push({ type:'set', ref: doc(db,'settings','main'), data: { turnSwaps: [], dedupV2Done:true }, merge:true });
+
+    settings.turnSwaps = [];
+    settings.dedupV2Done = true;
+    commitOpsInChunks(ops, 400).catch(function(e){ console.error('dedup failed', e); alert('Cleanup failed — check your internet connection and reopen the app.'); });
+    return true;
+  }
+
+  function commitOpsInChunks(ops, chunkSize){
+    var chunks = [];
+    for(var i=0;i<ops.length;i+=chunkSize){ chunks.push(ops.slice(i, i+chunkSize)); }
+    var p = Promise.resolve();
+    chunks.forEach(function(chunk){
+      p = p.then(function(){
+        var batch = writeBatch(db);
+        chunk.forEach(function(op){
+          if(op.type==='set') batch.set(op.ref, op.data, op.merge ? {merge:true} : undefined);
+          else if(op.type==='update') batch.update(op.ref, op.data);
+          else if(op.type==='delete') batch.delete(op.ref);
+        });
+        return batch.commit();
+      });
+    });
+    return p;
+  }
+
+  function maybeRunTurnSwapMigration(){
+    scheduleTurnSwap('Shanid Valliyad', 25, 'Swadiq Kodoor', 4);
+  }
+  function scheduleTurnSwap(nameA, origOrderA, nameB, origOrderB){
+    var a = students.find(function(s){ return s.name===nameA; });
+    var b = students.find(function(s){ return s.name===nameB; });
+    if(!a || !b) return;
+    if(a.order!==origOrderA || b.order!==origOrderB) return; // already swapped, or data changed — skip
+    var eff = todayStr();
+    var swapRec = { date: eff, changes: [ {id:a.id, from:origOrderA, to:origOrderB}, {id:b.id, from:origOrderB, to:origOrderA} ] };
+    var newSwaps = (settings.turnSwaps||[]).concat([swapRec]);
+    var batch = writeBatch(db);
+    batch.update(doc(db,'students',a.id), { order: origOrderB });
+    batch.update(doc(db,'students',b.id), { order: origOrderA });
+    batch.commit().catch(function(e){ console.error('swap turns', e); });
+    settings.turnSwaps = newSwaps;
+    setDoc(doc(db,'settings','main'), { turnSwaps: newSwaps }, { merge:true }).catch(function(e){ console.error('save turnSwaps', e); });
+  }
+
+  onSnapshot(doc(db, 'settings', 'main'), function(snap){
+    if(snap.exists()){
+      var v = snap.data();
+      settings.baseDate = v.baseDate || v.startDate || dateToStrEarly();
+      settings.baseJuz = v.baseJuz || 1;
+      settings.programStart = v.programStart || v.startDate || null; // null = unknown, repaired below once records are loaded
+      settings.adminId = v.adminId || '';
+      settings.adminPassword = v.adminPassword || '';
+      settings.excludedDates = v.excludedDates || [];
+      settings.turnSwaps = v.turnSwaps || [];
+      settings.dedupV2Done = !!v.dedupV2Done;
+    } else if(!seededSettings){
+      seededSettings = true;
+      setDoc(doc(db,'settings','main'), { baseDate: dateToStrEarly(), baseJuz: 1, programStart: dateToStrEarly(), adminId:'', adminPassword:'', excludedDates: [], turnSwaps: [], dedupV2Done:false }).catch(fbFail('seed settings'));
+    }
+    dataReady.settings = true;
+    maybeRunMigrations();
+    maybeFixProgramStart();
+    maybeFirstRender();
+  }, fbFail('settings'));
+
+  /* If programStart is missing from Firestore (e.g. an old doc from before this
+     field existed), recover it from the earliest existing recitation record
+     instead of silently defaulting to today — which would hide real history. */
+  var programStartFixed = false;
+  function maybeFixProgramStart(){
+    if(programStartFixed) return;
+    if(settings.programStart) { programStartFixed = true; return; }
+    if(!dataReady.records || !dataReady.settings) return;
+    programStartFixed = true;
+    var earliest = null;
+    Object.keys(records).forEach(function(k){
+      var dateStr = k.slice(0, 10);
+      if(/^\d{4}-\d{2}-\d{2}$/.test(dateStr) && (!earliest || dateStr < earliest)) earliest = dateStr;
+    });
+    var ps = earliest || todayStr();
+    settings.programStart = ps;
+    setDoc(doc(db,'settings','main'), { programStart: ps }, { merge:true }).catch(function(e){ console.error('fix programStart', e); });
+    render();
+  }
+
+  onSnapshot(collection(db, 'records'), function(snap){
+    var map = {};
+    snap.forEach(function(d){
+      var v = d.data();
+      map[d.id] = { completed: !!v.completed, completedAt: v.completedAt || null };
+    });
+    records = map;
+    dataReady.records = true;
+    maybeRunMigrations();
+    maybeFixProgramStart();
+    maybeFirstRender();
+  }, fbFail('records'));
+
+  function setCompleted(dateStr, studentId, completed){
+    var key = recordKey(dateStr, studentId);
+    records[key] = completed ? { completed:true, completedAt: Date.now() } : { completed:false, completedAt:null };
+    render(); // optimistic — onSnapshot will reconcile moments later
+    var payload = completed
+      ? { date:dateStr, studentId:studentId, completed:true, completedAt: Date.now() }
+      : { date:dateStr, studentId:studentId, completed:false, completedAt:null };
+    setDoc(doc(db, 'records', key), payload).catch(function(e){ console.error(e); alert('Could not save — check your internet connection.'); });
+  }
+  function saveStudentPhone(id, phone){
+    var s = students.find(function(x){ return x.id===id; });
+    if(s) s.phone = phone;
+    updateDoc(doc(db, 'students', id), { phone: phone }).catch(function(e){ console.error(e); });
+  }
+  function saveBaseJuz(juzNum){
+    settings.baseDate = todayStr();
+    settings.baseJuz = juzNum;
+    render();
+    setDoc(doc(db,'settings','main'), { baseDate: settings.baseDate, baseJuz: juzNum }, { merge:true }).catch(function(e){ console.error(e); alert('Could not save — check your internet connection.'); });
+  }
+  function saveAdminCreds(id, pass){
+    settings.adminId = id; settings.adminPassword = pass;
+    setDoc(doc(db,'settings','main'), { adminId:id, adminPassword:pass }, { merge:true }).catch(function(e){ console.error(e); alert('Could not save — check your internet connection.'); });
+  }
+
+  /* ================= DATE HELPERS ================= */
+  function pad(n){ return n<10 ? '0'+n : ''+n; }
+  function dateToStr(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+  function strToDate(s){ var p=s.split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
+  function today(){ var d=new Date(); d.setHours(0,0,0,0); return d; }
+  function todayStr(){ return dateToStr(today()); }
+  function daysBetween(a,b){ return Math.round((strToDate(b) - strToDate(a)) / 86400000); }
+  function addDays(dateStr, n){ var d=strToDate(dateStr); d.setDate(d.getDate()+n); return dateToStr(d); }
+  function fmtLong(dateStr){
+    var d = strToDate(dateStr);
+    var dow=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()];
+    var mo=['January','February','March','April','May','June','July','August','September','October','November','December'][d.getMonth()];
+    return dow+', '+d.getDate()+' '+mo+' '+d.getFullYear();
+  }
+  function fmtShort(dateStr){
+    var d = strToDate(dateStr);
+    var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+    return d.getDate()+' '+mo+' '+d.getFullYear();
+  }
+  function fmtTime(ts){
+    var d = new Date(ts);
+    var h = d.getHours(), m = pad(d.getMinutes());
+    var ap = h>=12 ? 'PM':'AM'; var h12 = h%12; if(h12===0) h12=12;
+    return h12+':'+m+' '+ap;
+  }
+  var ARABIC_DIGITS = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  function toArabicNum(n){ return String(n).split('').map(function(c){ return ARABIC_DIGITS[+c] !== undefined ? ARABIC_DIGITS[+c] : c; }).join(''); }
+
+  var JUZ_NAMES = [
+    "الم","سَيَقُولُ","تِلْكَ الرُّسُلُ","لَنْ تَنَالُوا","وَالْمُحْصَنَاتُ",
+    "لَا يُحِبُّ اللَّهُ","وَإِذَا سَمِعُوا","وَلَوْ أَنَّنَا","قَالَ الْمَلَأُ","وَاعْلَمُوا",
+    "يَعْتَذِرُونَ","وَمَا مِنْ دَابَّةٍ","وَمَا أُبَرِّئُ","رُبَمَا","سُبْحَانَ الَّذِي",
+    "قَالَ أَلَمْ","اقْتَرَبَ لِلنَّاسِ","قَدْ أَفْلَحَ","وَقَالَ الَّذِينَ","أَمَّنْ خَلَقَ",
+    "اتْلُ مَا أُوحِيَ","وَمَنْ يَقْنُتْ","وَمَا لِيَ","فَمَنْ أَظْلَمُ","إِلَيْهِ يُرَدُّ",
+    "حم","قَالَ فَمَا خَطْبُكُمْ","قَدْ سَمِعَ اللَّهُ","تَبَارَكَ الَّذِي","عَمَّ"
+  ];
+  function juzName(n){ return JUZ_NAMES[n-1] || ''; }
+
+  /* ================= ROTATION LOGIC ================= */
+  function dayOffsetFor(dateStr){
+    var raw = daysBetween(settings.baseDate, dateStr);
+    var n = students.length || 30;
+    return (((settings.baseJuz - 1) + raw) % n + n) % n;
+  }
+  function juzForPosition(position, dateStr){
+    var n = students.length || 30;
+    var offset = dayOffsetFor(dateStr);
+    return ((position + offset) % n) + 1;
+  }
+  function isFuture(dateStr){ return dateStr > todayStr(); }
+  function isBeforeStart(dateStr){ return false; }
+  function isExcluded(dateStr){ return (settings.excludedDates||[]).indexOf(dateStr) > -1; }
+  function excludeDate(dateStr){
+    if(isExcluded(dateStr)) return;
+    settings.excludedDates = (settings.excludedDates||[]).concat([dateStr]);
+    var batch = writeBatch(db);
+    students.forEach(function(s){
+      var rid = dateStr + '_' + s.id;
+      delete records[rid];
+      batch.delete(doc(db,'records',rid));
+    });
+    batch.commit().catch(function(e){ console.error(e); });
+    setDoc(doc(db,'settings','main'), { excludedDates: settings.excludedDates }, { merge:true }).catch(function(e){ console.error(e); alert('Could not save — check your internet connection.'); });
+    render();
+  }
+  function restoreDate(dateStr){
+    settings.excludedDates = (settings.excludedDates||[]).filter(function(d){ return d!==dateStr; });
+    setDoc(doc(db,'settings','main'), { excludedDates: settings.excludedDates }, { merge:true }).catch(function(e){ console.error(e); alert('Could not save — check your internet connection.'); });
+    render();
+  }
+
+  function recordKey(dateStr, studentId){ return dateStr+'_'+studentId; }
+  function getRecord(dateStr, studentId){ return records[recordKey(dateStr, studentId)] || {completed:false, completedAt:null}; }
+
+  /* Reconstructs each student's rotation order as it stood on a given date,
+     so a turn-swap only affects today onward and past history stays accurate. */
+  function effectiveOrder(student, dateStr){
+    var ord = student.order;
+    var swaps = settings.turnSwaps || [];
+    for(var i=swaps.length-1; i>=0; i--){
+      var sw = swaps[i];
+      if(dateStr < sw.date){
+        sw.changes.forEach(function(ch){ if(ch.id===student.id) ord = ch.from; });
+      }
+    }
+    return ord;
+  }
+  function orderedStudentsForDate(dateStr){
+    var arr = students.map(function(s){ return { s:s, ord: effectiveOrder(s, dateStr) }; });
+    arr.sort(function(a,b){ return a.ord - b.ord; });
+    return arr.map(function(x){ return x.s; });
+  }
+  function positionOnDate(studentId, dateStr){
+    return orderedStudentsForDate(dateStr).findIndex(function(s){ return s.id===studentId; });
+  }
+
+  function dayAssignments(dateStr){
+    return orderedStudentsForDate(dateStr).map(function(stu, idx){
+      var rec = getRecord(dateStr, stu.id);
+      return { student:stu, position:idx, juz: juzForPosition(idx, dateStr), completed:rec.completed, completedAt:rec.completedAt };
+    });
+  }
+  function daySummary(dateStr){
+    var list = dayAssignments(dateStr);
+    var completed = list.filter(function(a){ return a.completed; });
+    var total = list.length;
+    return {
+      total: total,
+      completed: completed.length,
+      pending: total - completed.length,
+      pct: total ? Math.round(completed.length/total*100) : 0,
+      pendingList: list.filter(function(a){ return !a.completed; }),
+      khatam: total>0 && completed.length===total
+    };
+  }
+
+  function loadAdminAuthed(){ try{ return localStorage.getItem('qr_admin_authed_v1')==='1'; }catch(e){ return false; } }
+  function saveAdminAuthed(v){ try{ if(v){ localStorage.setItem('qr_admin_authed_v1','1'); } else { localStorage.removeItem('qr_admin_authed_v1'); } }catch(e){} }
+
+  /* ================= APP STATE ================= */
+  var state = {
+    view: 'home',
+    selectedDate: todayStr(),
+    filter: 'all',
+    search: '',
+    calMonth: today().getMonth(),
+    calYear: today().getFullYear(),
+    studentDetailId: null,
+    detailFrom: 'students',
+    adminAuthed: loadAdminAuthed(),
+    adminError: ''
+  };
+
+  function waLink(phone, name, juz){
+    var digits = (phone||'').replace(/\D/g,'');
+    if(digits.length===10) digits = '91' + digits;
+    if(!digits) return null;
+    var msg = "السلام عليكم أخي 🫂\n📖 وردك اليومي(ختمة :HARAKA)\nالجزء: " + juz + "\nتقبل الله طاعتكم. يرجى تأكيد القراءة عبر الرابط:\n🔗https://quran-recitation-sooty.vercel.app/";
+    return 'https://wa.me/' + digits + '?text=' + encodeURIComponent(msg);
+  }
+
+  function generateAndSharePdf(dateStr){
+    if(!(window.jspdf && window.jspdf.jsPDF)){
+      alert('PDF tool is still loading — please try again in a moment.');
+      return;
+    }
+    var sum = daySummary(dateStr);
+    var list = dayAssignments(dateStr);
+    var doc = new window.jspdf.jsPDF();
+
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+    doc.text("Qur'an Recitation \u2014 Daily Report", 14, 18);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
+    doc.text('Date: ' + fmtLong(dateStr), 14, 27);
+    doc.text('Completed: ' + sum.completed + ' / ' + sum.total + '  (' + sum.pct + '%)', 14, 34);
+    doc.text('Khatam: ' + (sum.khatam ? 'Complete' : 'Not complete'), 14, 41);
+
+    var y = 54;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Juz', 14, y); doc.text('Student', 32, y); doc.text('Status', 165, y);
+    doc.setFont('helvetica', 'normal');
+    y += 7;
+    list.forEach(function(a){
+      if(y > 280){ doc.addPage(); y = 20; }
+      doc.text(String(a.juz), 14, y);
+      doc.text(a.student.name, 32, y);
+      doc.text(a.completed ? 'Completed' : 'Pending', 165, y);
+      y += 7;
+    });
+
+    var blob = doc.output('blob');
+    var fileName = 'quran-recitation-' + dateStr + '.pdf';
+    var file;
+    try{ file = new File([blob], fileName, { type: 'application/pdf' }); }catch(e){ file = null; }
+
+    if(file && navigator.canShare && navigator.canShare({ files: [file] })){
+      navigator.share({ files: [file], title: "Qur'an Recitation Report", text: 'Daily report \u2014 ' + fmtShort(dateStr) }).catch(function(){});
+    } else {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = fileName;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      alert('PDF downloaded. Open it and share to WhatsApp from there.');
+    }
+  }
+
+  function buildDayText(dateStr){
+    var list = dayAssignments(dateStr);
+    var title = (dateStr===todayStr()) ? 'TODAY KHATHAM \ud83d\udcd6\u2728' : (fmtLong(dateStr).toUpperCase() + ' \u2014 KHATHAM \ud83d\udcd6\u2728');
+    var lines = [title, ''];
+    list.forEach(function(a, i){
+      lines.push((i+1) + '. ' + a.student.name.toUpperCase() + ' - ' + juzName(a.juz));
+    });
+    return lines.join('\n');
+  }
+
+  function shareDayText(dateStr){
+    var text = buildDayText(dateStr);
+    if(navigator.share){
+      navigator.share({ text: text }).catch(function(){});
+    } else {
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
+  }
+
+  var QUOTES = [
+    "A little every day keeps the Qur'an alive in the heart.",
+    "Today's Juz — complete your part.",
+    "Consistency in recitation is dearer than a burst that fades.",
+    "Whoever guards the Qur'an, the Qur'an guards them.",
+    "One Juz today keeps the heart illuminated.",
+    "The Qur'an you memorised is a trust — renew it daily."
+  ];
+  function quoteFor(dateStr){
+    var h=0; for(var i=0;i<dateStr.length;i++) h += dateStr.charCodeAt(i);
+    return QUOTES[h % QUOTES.length];
+  }
+
+  /* ================= RENDER HELPERS ================= */
+  var content = document.getElementById('content');
+  var pageLabel = document.getElementById('pageLabel');
+
+  /* ---------- Theme (dark / light) ---------- */
+  var LS_THEME = 'qr_theme_v1';
+  function applyTheme(t){
+    if(t==='light' || t==='dark'){ document.documentElement.setAttribute('data-theme', t); }
+    else { document.documentElement.removeAttribute('data-theme'); }
+  }
+  (function initTheme(){
+    var saved = null;
+    try{ saved = localStorage.getItem(LS_THEME); }catch(e){}
+    applyTheme(saved);
+  })();
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var current = document.documentElement.getAttribute('data-theme');
+    var isDarkNow = current === 'dark' || (!current && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var next = isDarkNow ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem(LS_THEME, next); }catch(e){}
+  });
+  var PAGE_TITLES = { home:'Today', calendar:'Calendar', stats:'Statistics', students:'Students', admin:'Admin' };
+
+  function esc(s){ var d=document.createElement('div'); d.textContent = s==null?'':s; return d.innerHTML; }
+
+  function render(){
+    document.querySelectorAll('.nav-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.view === state.view);
+    });
+    pageLabel.textContent = state.view==='home' ? (state.selectedDate===todayStr() ? 'Today' : fmtShort(state.selectedDate)) : PAGE_TITLES[state.view];
+
+    if(state.view==='home') content.innerHTML = renderHome();
+    else if(state.view==='calendar') content.innerHTML = renderCalendar();
+    else if(state.view==='stats') content.innerHTML = renderStats();
+    else if(state.view==='students'){
+      content.innerHTML = state.studentDetailId ? renderStudentDetail(state.studentDetailId) : renderStudents();
+    }
+    else if(state.view==='admin') content.innerHTML = renderAdmin();
+  }
+
+  /* ---------- Navigation history (back button / swipe support) ---------- */
+  var NAV_KEYS = ['view','selectedDate','filter','studentDetailId','detailFrom'];
+  function navSnapshot(){
+    var o = {};
+    NAV_KEYS.forEach(function(k){ o[k] = state[k]; });
+    return o;
+  }
+  function navigateTo(patch, resetScroll){
+    state = Object.assign({}, state, patch);
+    try{ history.pushState({ appNav: navSnapshot() }, '', location.href); }catch(e){}
+    render();
+    if(resetScroll !== false){ window.scrollTo(0,0); }
+  }
+  window.addEventListener('popstate', function(e){
+    if(e.state && e.state.appNav){
+      state = Object.assign({}, state, e.state.appNav);
+      render();
+    }
+  });
+  try{ history.replaceState({ appNav: navSnapshot() }, '', location.href); }catch(e){}
+
+  /* ---------- HOME ---------- */
+  function renderHome(){
+    var dateStr = state.selectedDate;
+    var summary = daySummary(dateStr);
+    var future = isFuture(dateStr);
+    var before = isBeforeStart(dateStr);
+    var excluded = isExcluded(dateStr);
+    var list = dayAssignments(dateStr);
+
+    var q = state.search.trim().toLowerCase();
+    if(q) list = list.filter(function(a){ return a.student.name.toLowerCase().indexOf(q)>-1; });
+    if(state.filter==='completed') list = list.filter(function(a){ return a.completed; });
+    if(state.filter==='pending') list = list.filter(function(a){ return !a.completed; });
+
+    var html = '';
+    html += '<div class="hero">';
+    html += '<div class="eyebrow-date">'+esc(fmtLong(dateStr))+'</div>';
+    html += '<div class="hero-body">';
+    html += '<div class="ring-wrap"><div class="ring" style="--pct:'+summary.pct+'"><div class="ring-inner"><b>'+summary.pct+'%</b><span>DONE</span></div></div></div>';
+    html += '<div class="hero-stats">';
+    html += '<div class="hero-count">'+summary.completed+' <small>/ '+summary.total+' completed</small></div>';
+    html += '<div class="hero-sub">'+summary.pending+' pending &middot; '+students.length+' students</div>';
+    html += '</div></div>';
+    if(excluded){
+      html += '<div class="khatam-banner" style="opacity:0.85;">This date has been deleted \u2014 it isn\u2019t counted</div>';
+    } else if(summary.khatam){
+      html += '<div class="khatam-banner">🎉 Complete Khatam achieved today</div>';
+    } else if(!future && !before) {
+      html += '<div class="khatam-banner" style="opacity:0.85;">'+summary.pending+' Juz remaining for today\u2019s Khatam</div>';
+    }
+    if(dateStr !== todayStr()){
+      html += '<div class="viewing-banner"><span>'+(future?'Viewing a future date — recitation not yet due':excluded?'This date was deleted \u2014 hold it on the calendar to restore':before?'Viewing a date before the program started':'Viewing a past date — you can still record it')+'</span><button data-action="go-today">Today</button></div>';
+    } else {
+      html += '<div class="quote-line">'+esc(quoteFor(dateStr))+'</div>';
+    }
+    html += '</div>';
+
+    html += '<div class="filter-row">';
+    ['all','completed','pending'].forEach(function(f){
+      html += '<button class="pill'+(state.filter===f?' active':'')+'" data-action="filter" data-filter="'+f+'">'+f.charAt(0).toUpperCase()+f.slice(1)+'</button>';
+    });
+    html += '</div>';
+    html += '<div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+    html += '<input type="text" id="searchInput" placeholder="Search student..." value="'+esc(state.search)+'"></div>';
+
+    html += '<div class="student-list">';
+    if(!list.length){
+      html += '<div class="empty-state">No students match.</div>';
+    } else {
+      list.forEach(function(a){
+        var clickable = state.adminAuthed;
+        html += '<div class="s-card'+(a.completed?' done':'')+'">';
+        html += '<div class="juz-badge"><b>'+a.juz+'</b></div>';
+        html += '<div class="s-info"'+(clickable?' data-action="open-student" data-id="'+a.student.id+'" style="cursor:pointer;"':'')+'><div class="s-name">'+esc(a.student.name)+'</div>';
+        html += '<div class="juz-line">'+juzName(a.juz)+'</div>';
+        if(excluded){
+          html += '<div class="s-status future">Deleted</div>';
+        } else if(a.completed){
+          html += '<div class="s-status done">✅ Completed'+(a.completedAt?' &middot; '+fmtTime(a.completedAt):'')+'</div>';
+        } else if(future){
+          html += '<div class="s-status future">Scheduled</div>';
+        } else {
+          html += '<div class="s-status pending">⏳ Pending</div>';
+        }
+        html += '</div>';
+        if(excluded){
+          html += '<button class="mark-btn locked" disabled>Deleted</button>';
+        } else if(future){
+          html += '<button class="mark-btn locked" disabled>Not due</button>';
+        } else if(a.completed){
+          html += '<button class="mark-btn undo" data-action="undo" data-id="'+a.student.id+'">Undo</button>';
+        } else {
+          html += '<button class="mark-btn to-mark" data-action="mark" data-id="'+a.student.id+'">✓ Mark as Read</button>';
+        }
+        html += '</div>';
+      });
+    }
+    html += '</div>';
+    return html;
+  }
+
+  /* ---------- CALENDAR ---------- */
+  var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function renderCalendar(){
+    var y = state.calYear, m = state.calMonth;
+    var first = new Date(y,m,1);
+    var startWeekday = first.getDay();
+    var daysInMonth = new Date(y,m+1,0).getDate();
+
+    var html = '<div class="card" style="padding:16px;">';
+    html += '<div class="cal-nav"><button class="icon-btn" data-action="cal-prev"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>';
+    html += '<div class="cal-month">'+MONTH_NAMES[m]+' '+y+'</div>';
+    html += '<button class="icon-btn" data-action="cal-next"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></div>';
+    html += '<div class="cal-grid">';
+    ['S','M','T','W','T','F','S'].forEach(function(d){ html += '<div class="cal-dow">'+d+'</div>'; });
+    for(var i=0;i<startWeekday;i++) html += '<div class="cal-cell empty"></div>';
+    for(var day=1; day<=daysInMonth; day++){
+      var dStr = y+'-'+pad(m+1)+'-'+pad(day);
+      var cls = 'cal-cell';
+      var dotHtml = '';
+      if(isFuture(dStr)){ cls += ' future'; }
+      else if(isExcluded(dStr)){ cls += ' excluded'; }
+      else{
+        var sum = daySummary(dStr);
+        if(sum.completed===0) cls += ' none';
+        else if(sum.khatam) cls += ' full';
+        else cls += ' partial';
+        dotHtml = '<div class="dot"></div>';
+      }
+      if(dStr===todayStr()) cls += ' today';
+      if(dStr===state.selectedDate) cls += ' selected';
+      html += '<div class="'+cls+'" data-action="'+(isFuture(dStr)?'':'pick-date')+'" data-date="'+dStr+'" data-longpress-date="'+(isFuture(dStr)?'':dStr)+'">'+day+dotHtml+'</div>';
+    }
+    html += '</div>';
+    html += '<div class="cal-legend">';
+    html += '<span><i class="legend-dot" style="background:var(--gold)"></i>Full</span>';
+    html += '<span><i class="legend-dot" style="background:var(--emerald)"></i>Partial</span>';
+    html += '<span><i class="legend-dot" style="background:var(--amber)"></i>None</span>';
+    html += '</div></div>';
+
+    if(!isFuture(state.selectedDate) && isExcluded(state.selectedDate)){
+      // deleted date — nothing shown here
+    } else if(!isFuture(state.selectedDate)){
+      var s = daySummary(state.selectedDate);
+      html += '<div class="section-title">'+esc(fmtShort(state.selectedDate))+'</div>';
+      html += '<div class="stat-grid">';
+      html += '<div class="stat-box"><b>'+s.completed+'/'+s.total+'</b><span>Completed</span></div>';
+      html += '<div class="stat-box"><b>'+s.pct+'%</b><span>Completion</span></div>';
+      html += '</div>';
+      html += '<div style="margin-top:14px;"><button class="btn btn-primary" data-action="view-day" data-date="'+state.selectedDate+'">View & mark this day</button></div>';
+    }
+    return html;
+  }
+
+  /* ---------- STATS ---------- */
+  function renderStats(){
+    var start = settings.programStart || todayStr();
+    var end = todayStr();
+    var totalDays = Math.max(0, daysBetween(start, end) + 1);
+    var n = students.length;
+    var totalCompleted = 0;
+    var khatamDays = 0;
+    var khatamHistory = [];
+    var perStudent = {};
+    var countedDays = 0;
+    students.forEach(function(s){ perStudent[s.id] = {name:s.name, completed:0, total:0}; });
+
+    for(var i=0;i<totalDays;i++){
+      var d = addDays(start, i);
+      if(isExcluded(d)) continue;
+      countedDays++;
+      var sum = daySummary(d);
+      totalCompleted += sum.completed;
+      if(sum.khatam) khatamDays++;
+      khatamHistory.push({date:d, completed:sum.completed, total:sum.total, khatam:sum.khatam});
+      dayAssignments(d).forEach(function(a){
+        if(perStudent[a.student.id]){
+          perStudent[a.student.id].total++;
+          if(a.completed) perStudent[a.student.id].completed++;
+        }
+      });
+    }
+    khatamHistory.reverse();
+    var totalScheduled = countedDays * n;
+    var overallPct = totalScheduled ? Math.round(totalCompleted/totalScheduled*100) : 0;
+
+    var html = '';
+    html += '<div class="stat-grid">';
+    html += '<div class="stat-box"><b>'+n+'</b><span>Students</span></div>';
+    html += '<div class="stat-box"><b>'+countedDays+'</b><span>Days tracked</span></div>';
+    html += '<div class="stat-box"><b>'+totalCompleted+'/'+totalScheduled+'</b><span>Juz completed</span></div>';
+    html += '<div class="stat-box"><b>'+khatamDays+'</b><span>Complete Khatam</span></div>';
+    html += '</div>';
+    html += '<div class="section-title">Overall completion: '+overallPct+'%</div>';
+
+    html += '<div class="section-title">Student-wise</div>';
+    html += '<div class="table-wrap"><table class="s-table"><thead><tr><th>Student</th><th>Done</th><th>Pending</th><th>Rate</th></tr></thead><tbody>';
+    students.forEach(function(s){
+      var p = perStudent[s.id];
+      var rate = p.total ? Math.round(p.completed/p.total*100) : 0;
+      html += '<tr><td>'+esc(p.name)+'</td><td>'+p.completed+'</td><td>'+(p.total-p.completed)+'</td>';
+      html += '<td><span class="rate-bar"><i style="width:'+rate+'%"></i></span>'+rate+'%</td></tr>';
+    });
+    html += '</tbody></table></div>';
+
+    html += '<div class="section-title">Khatam history</div>';
+    html += '<div class="card" style="padding:6px 14px;">';
+    if(!khatamHistory.length){
+      html += '<div class="empty-state">No days tracked yet.</div>';
+    } else {
+      khatamHistory.slice(0,60).forEach(function(h){
+        html += '<div class="khatam-row"><span>'+esc(fmtShort(h.date))+'</span><span>'+h.completed+'/'+h.total+(h.khatam?' &nbsp;🎉':'')+'</span></div>';
+      });
+    }
+    html += '</div>';
+    return html;
+  }
+
+  /* ---------- STUDENTS ---------- */
+  function renderStudents(){
+    var d = todayStr();
+    var todayList = dayAssignments(d);
+    var byId = {}; todayList.forEach(function(a){ byId[a.student.id]=a; });
+
+    var html = '<div class="students-grid">';
+    students.forEach(function(s){
+      var a = byId[s.id];
+      var initials = s.name.split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+      html += '<div class="stu-row" data-action="open-student" data-id="'+s.id+'">';
+      html += '<div class="avatar">'+esc(initials)+'</div>';
+      html += '<div class="stu-meta"><b>'+esc(s.name)+'</b><span>Today: Juz '+(a?a.juz:'—')+(a? ' \u00b7 '+juzName(a.juz):'')+(a&&a.completed?' &middot; done':'')+'</span></div>';
+      html += '<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
+      html += '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function renderStudentDetail(id){
+    var s = students.find(function(x){ return x.id===id; });
+    if(!s){ state.studentDetailId=null; return renderStudents(); }
+    var start = settings.programStart || todayStr(), end = todayStr();
+    var totalDays = Math.max(0, daysBetween(start, end) + 1);
+    var idx = students.findIndex(function(x){ return x.id===id; });
+    var rows = [];
+    var completed=0, countedDays=0;
+    for(var i=totalDays-1;i>=0;i--){
+      var d = addDays(start, i);
+      if(isExcluded(d)) continue;
+      countedDays++;
+      var juz = juzForPosition(positionOnDate(id, d), d);
+      var rec = getRecord(d, id);
+      if(rec.completed) completed++;
+      rows.push({date:d, juz:juz, completed:rec.completed});
+    }
+    var rate = countedDays ? Math.round(completed/countedDays*100) : 0;
+    var todayA = { juz: juzForPosition(positionOnDate(id, todayStr()), todayStr()), completed: getRecord(todayStr(), id).completed };
+    var showPhoneEdit = state.adminAuthed && state.detailFrom === 'students';
+    var waHref = (state.adminAuthed && !todayA.completed) ? waLink(s.phone, s.name, todayA.juz) : null;
+
+    var now = today();
+    var monthStartStr = dateToStr(new Date(now.getFullYear(), now.getMonth(), 1));
+    var effMonthStart = monthStartStr > start ? monthStartStr : start;
+    var monthRows = rows.filter(function(r){ return r.date >= effMonthStart; });
+    var monthCompleted = monthRows.filter(function(r){ return r.completed; }).length;
+    var monthTotal = monthRows.length;
+
+    var html = '<div class="detail-header"><button class="back-btn" data-action="back-students"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>';
+    html += '<div class="app-title" style="font-size:17px;flex:1;">'+esc(s.name)+'</div>';
+    if(waHref){
+      html += '<a class="wa-btn" href="'+waHref+'" target="_blank" rel="noopener" title="Remind on WhatsApp"><svg viewBox="0 0 32 32"><path d="M16 3C9 3 3.3 8.6 3.3 15.5c0 2.4.7 4.7 1.9 6.7L3 29l7-1.9c1.9 1 4 1.6 6 1.6 7 0 12.7-5.6 12.7-12.5S23 3 16 3zm0 22.7c-1.9 0-3.7-.5-5.3-1.4l-.4-.2-4.2 1.1 1.1-4-.2-.4a10.3 10.3 0 0 1-1.6-5.5c0-5.8 4.8-10.5 10.6-10.5s10.6 4.7 10.6 10.5S21.8 25.7 16 25.7zm5.8-7.9c-.3-.2-1.9-.9-2.1-1-.3-.1-.5-.2-.7.1-.2.3-.8 1-1 1.2-.2.2-.4.3-.7.1-.3-.2-1.4-.5-2.7-1.6-1-.9-1.7-2-1.9-2.3-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.9-.8 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.6-.4z"/></svg></a>';
+    }
+    html += '</div>';
+    html += '<div class="juz-line" style="font-size:14px;margin-top:2px;">Juz '+todayA.juz+' \u2014 '+juzName(todayA.juz)+'</div>';
+    if(showPhoneEdit){
+      html += '<div class="login-field" style="margin-top:8px;"><label>Phone (for WhatsApp reminder)</label><input type="text" data-action="rename-phone" data-id="'+s.id+'" value="'+esc(s.phone)+'" placeholder="e.g. 9447xxxxxx"></div>';
+    }
+    html += '<div class="section-title">This month</div>';
+    html += '<div class="stat-grid">';
+    html += '<div class="stat-box"><b>'+monthCompleted+'</b><span>Completed this month</span></div>';
+    html += '<div class="stat-box"><b>'+(monthTotal-monthCompleted)+'</b><span>Remaining this month</span></div>';
+    html += '</div>';
+    html += '<div class="section-title">All-time</div>';
+    html += '<div class="stat-grid">';
+    html += '<div class="stat-box"><b>'+completed+'</b><span>Completed</span></div>';
+    html += '<div class="stat-box"><b>'+(countedDays-completed)+'</b><span>Missed / Pending</span></div>';
+    html += '<div class="stat-box"><b>'+rate+'%</b><span>Completion rate</span></div>';
+    html += '<div class="stat-box"><b>'+(juzForPosition(positionOnDate(id, todayStr()), todayStr()))+'</b><span>Today\u2019s Juz</span></div>';
+    html += '</div>';
+    html += '<div class="section-title">History</div>';
+    html += '<div class="card" style="padding:6px 14px;">';
+    if(!rows.length){ html += '<div class="empty-state">No history yet.</div>'; }
+    rows.slice(0,90).forEach(function(r){
+      var statusHtml = r.completed ? '<span class="hist-status done">✅ Done</span>' : (r.date===todayStr()? '<span class="hist-status future">⏳ Pending</span>' : '<span class="hist-status miss">❌ Missed</span>');
+      html += '<div class="hist-row"><span>'+esc(fmtShort(r.date))+' &middot; Juz '+r.juz+' ('+juzName(r.juz)+')</span>'+statusHtml+'</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  /* ---------- ADMIN ---------- */
+  function renderAdmin(){
+    if(!settings.adminId || !settings.adminPassword) return renderAdminSetup();
+    if(!state.adminAuthed) return renderAdminLogin();
+    return renderAdminPanel();
+  }
+
+  function renderAdminSetup(){
+    var html = '<div class="login-wrap">';
+    html += '<h3>Set up Admin login</h3><p class="hint">Choose an ID &amp; password to protect this Admin page. You\u2019ll need these every time you open Admin.</p>';
+    html += '<div class="login-field"><label>Admin ID</label><input type="text" id="setupId" placeholder="e.g. ustad1"></div>';
+    html += '<div class="login-field"><label>Password</label><input type="text" id="setupPass" placeholder="Choose a password"></div>';
+    html += '<button class="btn btn-primary" style="width:100%;margin-top:6px;" data-action="admin-setup-save">Save &amp; continue</button>';
+    if(state.adminError) html += '<div class="login-error">'+esc(state.adminError)+'</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function renderAdminLogin(){
+    var html = '<div class="login-wrap">';
+    html += '<h3>Admin login</h3><p class="hint">Enter your Admin ID and password to continue.</p>';
+    html += '<div class="login-field"><label>Admin ID</label><input type="text" id="loginId"></div>';
+    html += '<div class="login-field"><label>Password</label><input type="text" id="loginPass"></div>';
+    html += '<button class="btn btn-primary" style="width:100%;margin-top:6px;" data-action="admin-login">Login</button>';
+    if(state.adminError) html += '<div class="login-error">'+esc(state.adminError)+'</div>';
+    html += '<div style="margin-top:14px;"><button class="logout-link" data-action="admin-reset-login">Forgot ID / password? Reset login</button></div>';
+    html += '</div>';
+    return html;
+  }
+
+  function renderAdminPanel(){
+    var html = '';
+    html += '<div class="admin-topbar"><span class="muted" style="font-size:12.5px;font-weight:600;">Signed in as '+esc(settings.adminId)+'</span><button class="logout-link" data-action="admin-logout">Log out</button></div>';
+
+    html += '<div class="admin-block"><h4>Today\u2019s rotation</h4><p class="hint">Set the Juz for <b>'+esc(students[0] ? students[0].name : 'the first student')+'</b> (today). Everyone else\u2019s Juz is calculated automatically from this.</p>';
+    html += '<input type="number" id="baseJuzInput" min="1" max="'+(students.length||30)+'" value="'+esc(settings.baseJuz)+'" style="margin-bottom:10px;">';
+    html += '<button class="btn btn-outline" style="width:100%;" data-action="admin-save-basejuz">Save</button></div>';
+
+    html += '<div class="admin-block"><h4>Share a day\u2019s count</h4><p class="hint">Pick any date, generate a PDF of that day\u2019s recitation count, and share it straight to WhatsApp.</p>';
+    html += '<input type="date" id="reportDateInput" value="'+esc(todayStr())+'" max="'+esc(todayStr())+'" style="margin-bottom:10px;">';
+    html += '<button class="btn btn-primary" style="width:100%;margin-bottom:8px;" data-action="share-pdf">Share as PDF</button>';
+    html += '<button class="btn btn-outline" style="width:100%;" data-action="share-text">Share as text message</button></div>';
+
+    html += '<div class="admin-block"><h4>Admin login</h4><p class="hint">Change your Admin ID / password.</p>';
+    html += '<div class="login-field"><label>Admin ID</label><input type="text" id="changeId" value="'+esc(settings.adminId)+'"></div>';
+    html += '<div class="login-field"><label>Password</label><input type="text" id="changePass" value="'+esc(settings.adminPassword)+'"></div>';
+    html += '<button class="btn btn-outline" data-action="admin-save-creds">Save credentials</button></div>';
+    return html;
+  }
+
+  /* ================= EVENTS ================= */
+  document.getElementById('bottomNav').addEventListener('click', function(e){
+    var btn = e.target.closest('.nav-btn');
+    if(!btn) return;
+    navigateTo({ view: btn.dataset.view, studentDetailId: null });
+  });
+
+  document.getElementById('app').addEventListener('click', function(e){
+    var el = e.target.closest('[data-action]');
+    if(!el) return;
+    var action = el.dataset.action;
+
+    if(action==='mark'){ if(!isExcluded(state.selectedDate)){ setCompleted(state.selectedDate, el.dataset.id, true); render(); } }
+    else if(action==='undo'){ if(!isExcluded(state.selectedDate)){ setCompleted(state.selectedDate, el.dataset.id, false); render(); } }
+    else if(action==='filter'){ state.filter = el.dataset.filter; render(); }
+    else if(action==='go-today'){ state.selectedDate = todayStr(); render(); }
+    else if(action==='pick-date'){
+      if(lpFired){ lpFired=false; } else { state.selectedDate = el.dataset.date; render(); }
+    }
+    else if(action==='view-day'){ state.selectedDate = el.dataset.date; state.view='home'; render(); }
+    else if(action==='cal-prev'){
+      state.calMonth--; if(state.calMonth<0){ state.calMonth=11; state.calYear--; } render();
+    }
+    else if(action==='cal-next'){
+      state.calMonth++; if(state.calMonth>11){ state.calMonth=0; state.calYear++; } render();
+    }
+    else if(action==='open-student'){ navigateTo({ detailFrom: state.view, view: 'students', studentDetailId: el.dataset.id }, false); }
+    else if(action==='back-students'){ history.back(); }
+    else if(action==='admin-setup-save'){
+      var id = document.getElementById('setupId').value.trim();
+      var pass = document.getElementById('setupPass').value.trim();
+      if(!id || !pass){ state.adminError='Please fill in both fields.'; render(); return; }
+      saveAdminCreds(id, pass);
+      state.adminAuthed = true; state.adminError=''; saveAdminAuthed(true); render();
+    }
+    else if(action==='admin-login'){
+      var lid = document.getElementById('loginId').value.trim();
+      var lpass = document.getElementById('loginPass').value.trim();
+      if(lid===settings.adminId && lpass===settings.adminPassword){ state.adminAuthed=true; state.adminError=''; saveAdminAuthed(true); render(); }
+      else { state.adminError='Incorrect ID or password.'; render(); }
+    }
+    else if(action==='admin-logout'){ state.adminAuthed=false; saveAdminAuthed(false); render(); }
+    else if(action==='admin-reset-login'){
+      if(confirm('This clears the current Admin ID & password so you can set new ones. Your students, records and phone numbers are not affected. Continue?')){
+        saveAdminCreds('', '');
+        state.adminAuthed=false; state.adminError=''; saveAdminAuthed(false); render();
+      }
+    }
+    else if(action==='admin-save-creds'){
+      var nid = document.getElementById('changeId').value.trim();
+      var npass = document.getElementById('changePass').value.trim();
+      if(nid && npass){ saveAdminCreds(nid, npass); render(); }
+    }
+    else if(action==='admin-save-basejuz'){
+      var bj = parseInt(document.getElementById('baseJuzInput').value, 10);
+      var maxN = students.length || 30;
+      if(!bj || bj<1 || bj>maxN){ alert('Please enter a Juz number between 1 and '+maxN+'.'); return; }
+      saveBaseJuz(bj);
+    }
+    else if(action==='share-pdf'){
+      var rd = document.getElementById('reportDateInput').value || todayStr();
+      generateAndSharePdf(rd);
+    }
+    else if(action==='share-text'){
+      var rdt = document.getElementById('reportDateInput').value || todayStr();
+      shareDayText(rdt);
+    }
+  });
+
+  /* ---------- Long-press a calendar date (3s) to delete/restore it ---------- */
+  var lpTimer = null, lpFired = false;
+  function clearLP(){ if(lpTimer){ clearTimeout(lpTimer); lpTimer = null; } }
+  function handleDateLongPress(dateStr){
+    if(!state.adminAuthed) return;
+    if(isFuture(dateStr)) return;
+    if(isExcluded(dateStr)){
+      if(confirm('Restore '+fmtShort(dateStr)+'? It will count normally again and can be marked.')){ restoreDate(dateStr); }
+    } else {
+      if(confirm('Delete '+fmtShort(dateStr)+'? No one will be able to mark recitation for this date, and it won\u2019t count as pending.')){ excludeDate(dateStr); }
+    }
+  }
+  document.getElementById('app').addEventListener('contextmenu', function(e){
+    if(e.target.closest('[data-longpress-date]')) e.preventDefault();
+  });
+  document.getElementById('app').addEventListener('pointerdown', function(e){
+    var el = e.target.closest('[data-longpress-date]');
+    if(!el || !el.dataset.longpressDate) return;
+    var dateStr = el.dataset.longpressDate;
+    clearLP();
+    lpTimer = setTimeout(function(){ lpFired = true; handleDateLongPress(dateStr); }, 3000);
+  });
+  ['pointerup','pointercancel','pointerleave','pointermove'].forEach(function(evt){
+    document.getElementById('app').addEventListener(evt, clearLP);
+  });
+
+  content.addEventListener('input', function(e){
+    if(e.target.id==='searchInput'){ state.search = e.target.value; render(); document.getElementById('searchInput').focus(); document.getElementById('searchInput').selectionStart = document.getElementById('searchInput').value.length; }
+    else if(e.target.dataset && e.target.dataset.action==='rename'){
+      var s = students.find(function(x){ return x.id===e.target.dataset.id; });
+      if(s){ s.name = e.target.value; updateDoc(doc(db,'students', s.id), { name: e.target.value }).catch(function(err){ console.error(err); }); }
+    }
+    else if(e.target.dataset && e.target.dataset.action==='rename-phone'){
+      var s2 = students.find(function(x){ return x.id===e.target.dataset.id; });
+      if(s2){ saveStudentPhone(s2.id, e.target.value); }
+    }
+  });
+  content.addEventListener('change', function(e){
+    if(e.target.dataset && (e.target.dataset.action==='rename' || e.target.dataset.action==='rename-phone')){ render(); }
+  });
+
+  content.innerHTML = '<div class="empty-state" style="padding-top:60px;">Connecting\u2026</div>';
+})();
+</script>
+</body>
+</html>
